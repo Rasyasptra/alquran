@@ -1,0 +1,297 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+/* Islamic Edition Color Palette - Light Mode */
+:root {
+  --islamic-primary: #0D5466;
+  --islamic-primary-dark: #0a3d4a;
+  --islamic-primary-light: #e8f4f7;
+  --islamic-accent: #BC832A;
+  --islamic-accent-light: #d4a84a;
+  --islamic-background: #FFFCED;
+  --islamic-cream: #FFFCED;
+  --islamic-border: #e8f4f7;
+  --islamic-text: #1a1a1a;
+  --islamic-text-muted: #6b7280;
+  --islamic-card-bg: white;
+  --islamic-card-border: #e0e0e0;
+  --islamic-sidebar-bg: #0D5466;
+}
+
+/* Dark Mode - High Contrast */
+.dark {
+  --islamic-primary: #5ce1e6;
+  --islamic-primary-dark: #4dd0e1;
+  --islamic-primary-light: #37474f;
+  --islamic-accent: #ffd54f;
+  --islamic-accent-light: #ffe082;
+  --islamic-background: #0d1117;
+  --islamic-cream: #161b22;
+  --islamic-border: #30363d;
+  --islamic-text: #f0f6fc;
+  --islamic-text-muted: #8b949e;
+  --islamic-card-bg: #21262d;
+  --islamic-card-border: #30363d;
+  --islamic-sidebar-bg: #0a0e14;
+}
+
+/* Base Styles */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  background-color: var(--islamic-background);
+  color: var(--islamic-text);
+}
+
+/* Arabic Font */
+.font-arabic {
+  font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+  line-height: 2.2;
+}
+
+.font-arabic-display {
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  line-height: 2.5;
+  letter-spacing: 0.02em;
+}
+
+/* Islamic Theme Utilities */
+.bg-islamic-primary {
+  background-color: var(--islamic-primary);
+}
+
+.bg-islamic-primary-dark {
+  background-color: var(--islamic-primary-dark);
+}
+
+.bg-islamic-accent {
+  background-color: var(--islamic-accent);
+}
+
+.bg-islamic-cream {
+  background-color: var(--islamic-cream);
+}
+
+.text-islamic-primary {
+  color: var(--islamic-primary);
+}
+
+.text-islamic-accent {
+  color: var(--islamic-accent);
+}
+
+.text-islamic-cream {
+  color: var(--islamic-cream);
+}
+
+.border-islamic-primary {
+  border-color: var(--islamic-primary);
+}
+
+.border-islamic-accent {
+  border-color: var(--islamic-accent);
+}
+
+/* Custom Components */
+.search-pill {
+  border-radius: 40px;
+  border: 1px solid var(--islamic-border);
+  background: var(--islamic-card-bg);
+  transition: all 0.2s ease;
+}
+
+.search-pill:focus-within {
+  border-color: var(--islamic-primary);
+  box-shadow: 0 0 0 3px var(--islamic-primary-light);
+}
+
+.surah-item {
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.surah-item:hover {
+  background-color: var(--islamic-primary-light);
+}
+
+.surah-item.active {
+  background-color: var(--islamic-primary);
+  color: white;
+}
+
+.verse-card {
+  border-radius: 16px;
+  background: var(--islamic-card-bg);
+  border: 1px solid var(--islamic-card-border);
+  transition: all 0.2s ease;
+}
+
+.sidebar-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sidebar-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.sidebar-icon.active {
+  background-color: var(--islamic-accent);
+  color: white;
+}
+
+/* Reading Experience Settings */
+:root {
+  --arabic-font-size: 24px;
+  --translation-font-size: 16px;
+  --line-spacing: 1.8;
+}
+
+/* Night Reading Mode */
+.night-reading {
+  --islamic-background: #1a1a2e;
+  --islamic-card-bg: #16213e;
+  --islamic-border: #0f3460;
+  --islamic-text: #e8e8e8;
+  --islamic-text-muted: #a8a8a8;
+  --islamic-primary: #4fbdba;
+  --islamic-accent: #4fbdba;
+  --islamic-accent-light: #6fc5d3;
+  --islamic-cream: #1e3a5f;
+}
+
+.night-reading .font-arabic-display {
+  color: #f0f0f0;
+}
+
+.night-reading .font-arabic {
+  color: #e8e8e8;
+}
+
+/* Apply reading settings to Arabic text */
+.font-arabic-display {
+  font-size: var(--arabic-font-size);
+  font-family: 'Amiri', 'Scheherazade New', serif;
+  line-height: var(--line-spacing);
+}
+
+.font-arabic {
+  font-size: var(--arabic-font-size);
+  font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+  line-height: var(--line-spacing);
+}
+
+/* Apply reading settings to translation text */
+.translation-text {
+  font-size: var(--translation-font-size);
+  line-height: var(--line-spacing);
+}
+
+.verse-text {
+  font-size: var(--translation-font-size);
+  line-height: var(--line-spacing);
+}
+
+/* Three Column Layout */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-column {
+  width: 70px;
+  flex-shrink: 0;
+  background-color: var(--islamic-sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+}
+
+.surah-list-column {
+  width: 280px;
+  flex-shrink: 0;
+  background-color: var(--islamic-cream);
+  border-right: 1px solid var(--islamic-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.reader-column {
+  flex: 1;
+  background-color: var(--islamic-background);
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  height: 100vh;
+  background-color: var(--islamic-cream);
+  border-left: 1px solid var(--islamic-border);
+  transition: right 0.3s ease;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.settings-panel.open {
+  right: 0;
+}
+
+/* Action Icons */
+.action-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--islamic-text-muted);
+  transition: all 0.2s ease;
+}
+
+.action-icon:hover {
+  background-color: var(--islamic-primary-light);
+  color: var(--islamic-accent);
+}
+
+.action-icon.liked {
+  color: #ef4444;
+}
+
+/* Loading Animation */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Smooth Transitions */
+.transition-colors {
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
