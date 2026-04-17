@@ -29,23 +29,25 @@ class PrayerTimeSeeder extends Seeder
             // Hijri date calculation (simplified)
             $hijriDate = $this->calculateHijriDate($startDate);
             
-            PrayerTime::create([
-                'date' => $date,
-                'fajr' => $prayerTimes['fajr'],
-                'dhuhr' => $prayerTimes['dhuhr'],
-                'asr' => $prayerTimes['asr'],
-                'maghrib' => $prayerTimes['maghrib'],
-                'isha' => $prayerTimes['isha'],
-                'fajr_iqama' => $prayerTimes['fajr_iqama'],
-                'dhuhr_iqama' => $prayerTimes['dhuhr_iqama'],
-                'asr_iqama' => $prayerTimes['asr_iqama'],
-                'maghrib_iqama' => $prayerTimes['maghrib_iqama'],
-                'isha_iqama' => $prayerTimes['isha_iqama'],
-                'hijri_date' => $hijriDate['day'],
-                'month' => $hijriDate['month'],
-                'year' => $hijriDate['year'],
-                'is_ramadan' => $this->isRamadan($hijriDate['month']),
-            ]);
+            PrayerTime::updateOrCreate(
+                ['date' => $date],
+                [
+                    'fajr' => $prayerTimes['fajr'],
+                    'dhuhr' => $prayerTimes['dhuhr'],
+                    'asr' => $prayerTimes['asr'],
+                    'maghrib' => $prayerTimes['maghrib'],
+                    'isha' => $prayerTimes['isha'],
+                    'fajr_iqama' => $prayerTimes['fajr_iqama'],
+                    'dhuhr_iqama' => $prayerTimes['dhuhr_iqama'],
+                    'asr_iqama' => $prayerTimes['asr_iqama'],
+                    'maghrib_iqama' => $prayerTimes['maghrib_iqama'],
+                    'isha_iqama' => $prayerTimes['isha_iqama'],
+                    'hijri_date' => $hijriDate['day'],
+                    'month' => $hijriDate['month'],
+                    'year' => $hijriDate['year'],
+                    'is_ramadan' => $this->isRamadan($hijriDate['month']),
+                ]
+            );
             
             $startDate->addDay();
         }

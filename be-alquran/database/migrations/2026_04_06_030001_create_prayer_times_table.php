@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * DEPRECATED — 2026-04-16
+ *
+ * Migration ini tidak lagi digunakan secara aktif.
+ * Jadwal sholat kini diambil dari API eksternal eQuran.id
+ * melalui App\Services\JadwalSholatService (di-cache 1 hari).
+ *
+ * Table `prayer_times` di database dibiarkan untouched untuk menghindari
+ * kerusakan pada data lama. Hapus migration ini hanya jika Anda yakin
+ * tidak ada data penting di table tersebut dan sudah menjalankan rollback.
+ */
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

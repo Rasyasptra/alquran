@@ -3,153 +3,162 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\PrayerTime;
-use App\Models\MosqueInfo;
+use App\Services\JadwalSholatService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 
 class PrayerTimeController extends Controller
 {
+    public function __construct(private JadwalSholatService $service) {}
+
     /**
-     * Get today's prayer times
+     * Jadwal sholat hari ini (diambil dari eQuran.id via cache)
      */
     public function today()
     {
-        $today = PrayerTime::getToday();
-        
-        if (!$today) {
+        try {
+            $schedule = $this->service->getTodaySchedule();
+
+            if (!$schedule) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jadwal sholat hari ini tidak ditemukan.',
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data'    => [
+                    'date'     => $schedule['tanggal_lengkap'],
+                    'hari'     => $schedule['hari'],
+                    'location' => [
+                        'provinsi' => $this->service->getProvinsi(),
+                        'kabkota'  => $this->service->getKabkota(),
+                    ],
+                    'fajr'    => $schedule['subuh'],
+                    'dhuhr'   => $schedule['dzuhur'],
+                    'asr'     => $schedule['ashar'],
+                    'maghrib' => $schedule['maghrib'],
+                    'isha'    => $schedule['isya'],
+                    'imsak'   => $schedule['imsak'],
+                ],
+            ]);
+
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Prayer times for today not found'
-            ], 404);
+                'message' => $e->getMessage(),
+            ], 503);
         }
-
-        $nextPrayer = $today->getNextPrayer();
-        $mosque = MosqueInfo::getDefault();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'date' => $today->date,
-                'hijri_date' => $today->hijri_date,
-                'is_ramadan' => $today->is_ramadan,
-                'prayer_times' => [
-                    'fajr' => [
-                        'time' => $today->fajr->format('H:i'),
-                        'iqama' => $today->fajr_iqama?->format('H:i')
-                    ],
-                    'dhuhr' => [
-                        'time' => $today->dhuhr->format('H:i'),
-                        'iqama' => $today->dhuhr_iqama?->format('H:i')
-                    ],
-                    'asr' => [
-                        'time' => $today->asr->format('H:i'),
-                        'iqama' => $today->asr_iqama?->format('H:i')
-                    ],
-                    'maghrib' => [
-                        'time' => $today->maghrib->format('H:i'),
-                        'iqama' => $today->maghrib_iqama?->format('H:i')
-                    ],
-                    'isha' => [
-                        'time' => $today->isha->format('H:i'),
-                        'iqama' => $today->isha_iqama?->format('H:i')
-                    ]
-                ],
-                'next_prayer' => $nextPrayer ? [
-                    'name' => $nextPrayer['name'],
-                    'time' => $nextPrayer['time']->format('H:i'),
-                    'iqama' => $nextPrayer['iqama']?->format('H:i'),
-                    'countdown' => $nextPrayer['time']->diffInSeconds(now())
-                ] : null,
-                'mosque' => $mosque ? [
-                    'name' => $mosque->name,
-                    'timezone' => $mosque->timezone
-                ] : null
-            ]
-        ]);
     }
 
     /**
-     * Get prayer times for a specific month
+     * Jadwal sholat bulanan (diambil dari eQuran.id via cache)
+     * Route: GET /prayer-times/month/{month?}  →  month = "YYYY-MM"
      */
     public function month($month = null)
     {
-        $month = $month ?: now()->format('Y-m');
-        $prayerTimes = PrayerTime::where('date', 'like', $month . '%')
-            ->orderBy('date')
-            ->get();
+        $monthParam = $month ?? now()->format('Y-m');
+        $parts      = explode('-', $monthParam);
 
-        return response()->json([
-            'success' => true,
-            'data' => $prayerTimes->map(function ($pt) {
-                return [
-                    'date' => $pt->date,
-                    'hijri_date' => $pt->hijri_date,
-                    'fajr' => $pt->fajr->format('H:i'),
-                    'dhuhr' => $pt->dhuhr->format('H:i'),
-                    'asr' => $pt->asr->format('H:i'),
-                    'maghrib' => $pt->maghrib->format('H:i'),
-                    'isha' => $pt->isha->format('H:i'),
-                    'is_ramadan' => $pt->is_ramadan
-                ];
-            })
-        ]);
+        if (count($parts) !== 2 || !is_numeric($parts[0]) || !is_numeric($parts[1])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Format bulan tidak valid. Gunakan format YYYY-MM.',
+            ], 422);
+        }
+
+        [$year, $mon] = [(int) $parts[0], (int) $parts[1]];
+
+        try {
+            $schedules = $this->service->getMonthSchedule($mon, $year);
+
+            return response()->json([
+                'success' => true,
+                'data'    => collect($schedules)->map(fn ($s) => [
+                    'id'      => $s['tanggal'] ?? 0,
+                    'date'    => $s['tanggal_lengkap'],
+                    'hari'    => $s['hari'],
+                    'fajr'    => $s['subuh'],
+                    'dhuhr'   => $s['dzuhur'],
+                    'asr'     => $s['ashar'],
+                    'maghrib' => $s['maghrib'],
+                    'isha'    => $s['isya'],
+                    'imsak'   => $s['imsak'],
+                ])->values(),
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 503);
+        }
     }
 
     /**
-     * Get countdown to next prayer
+     * Countdown ke sholat berikutnya
      */
     public function countdown()
     {
-        $today = PrayerTime::getToday();
-        
-        if (!$today) {
+        try {
+            $schedule = $this->service->getTodaySchedule();
+
+            if (!$schedule) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jadwal sholat hari ini tidak ditemukan.',
+                ], 404);
+            }
+
+            $now       = now();
+            $dateStr   = $schedule['tanggal_lengkap'];
+            $prayers   = [
+                ['key' => 'fajr',    'name' => 'Subuh',   'time' => $schedule['subuh']],
+                ['key' => 'dhuhr',   'name' => 'Dzuhur',  'time' => $schedule['dzuhur']],
+                ['key' => 'asr',     'name' => 'Ashar',   'time' => $schedule['ashar']],
+                ['key' => 'maghrib', 'name' => 'Maghrib', 'time' => $schedule['maghrib']],
+                ['key' => 'isha',    'name' => 'Isya',    'time' => $schedule['isya']],
+            ];
+
+            $nextPrayer    = null;
+            $currentPrayer = null;
+
+            foreach ($prayers as $prayer) {
+                $prayerTime = Carbon::parse("{$dateStr} {$prayer['time']}");
+                if ($prayerTime > $now) {
+                    $diffSecs  = $prayerTime->diffInSeconds($now);
+                    $nextPrayer = [
+                        'name'                => $prayer['name'],
+                        'time'                => $prayer['time'],
+                        'countdown_seconds'   => $diffSecs,
+                        'countdown_formatted' => $this->formatCountdown($diffSecs),
+                    ];
+                    break;
+                }
+                $currentPrayer = ['name' => $prayer['name'], 'time' => $prayer['time']];
+            }
+
+            return response()->json([
+                'success' => true,
+                'data'    => [
+                    'current_time'   => $now->format('H:i:s'),
+                    'current_prayer' => $currentPrayer,
+                    'next_prayer'    => $nextPrayer,
+                ],
+            ]);
+
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Prayer times for today not found'
-            ], 404);
+                'message' => $e->getMessage(),
+            ], 503);
         }
-
-        $nextPrayer = $today->getNextPrayer();
-        $currentPrayer = null;
-        
-        // Find current prayer
-        $now = now();
-        $prayers = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
-        
-        for ($i = count($prayers) - 1; $i >= 0; $i--) {
-            if ($today->{$prayers[$i]} <= $now) {
-                $currentPrayer = [
-                    'name' => $prayers[$i],
-                    'time' => $today->{$prayers[$i]}->format('H:i'),
-                    'iqama' => $today->{$prayers[$i] . '_iqama'}?->format('H:i')
-                ];
-                break;
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'current_time' => $now->format('H:i:s'),
-                'current_prayer' => $currentPrayer,
-                'next_prayer' => $nextPrayer ? [
-                    'name' => $nextPrayer['name'],
-                    'time' => $nextPrayer['time']->format('H:i'),
-                    'iqama' => $nextPrayer['iqama']?->format('H:i'),
-                    'countdown_seconds' => $nextPrayer['time']->diffInSeconds($now),
-                    'countdown_formatted' => $this->formatCountdown($nextPrayer['time']->diffInSeconds($now))
-                ] : null
-            ]
-        ]);
     }
 
-    private function formatCountdown($seconds)
+    private function formatCountdown(int $seconds): string
     {
-        $hours = floor($seconds / 3600);
-        $minutes = floor(($seconds % 3600) / 60);
-        $secs = $seconds % 60;
-        
-        return sprintf('%02d:%02d:%02d', $hours, $minutes, $secs);
+        return sprintf('%02d:%02d:%02d', floor($seconds / 3600), floor(($seconds % 3600) / 60), $seconds % 60);
     }
 }
