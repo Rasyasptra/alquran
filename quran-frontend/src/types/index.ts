@@ -66,6 +66,35 @@ export interface DailyPrayer {
   audio_url?: string;
 }
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'admin';
+}
+
+export interface Petugas {
+  id: number;
+  nama: string;
+  jabatan: 'imam' | 'bilal' | 'muadzin' | 'penceramah';
+  no_telepon?: string;
+  aktif: boolean;
+}
+
+export interface JadwalPetugas {
+  id: number;
+  tanggal: string;
+  catatan?: string;
+  imam_id?: number;
+  bilal_id?: number;
+  muadzin_id?: number;
+  penceramah_id?: number;
+  imam?: Petugas;
+  bilal?: Petugas;
+  muadzin?: Petugas;
+  penceramah?: Petugas;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

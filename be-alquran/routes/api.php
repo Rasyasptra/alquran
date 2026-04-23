@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\QuranController;
 use App\Http\Controllers\Api\MosqueStaffScheduleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PushController;
+use App\Http\Controllers\Api\PetugasController;
+use App\Http\Controllers\Api\JadwalPetugasController;
 
 Route::get('/test-quran', function () {
     return response()->json([
@@ -70,3 +72,24 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/push/subscribe', [PushController::class, 'subscribe']);
 Route::post('/push/unsubscribe', [PushController::class, 'unsubscribe']);
 Route::get('/push/vapid-public-key', [PushController::class, 'vapidPublicKey']);
+
+// --- NEW ROUTES REQUESTED BY USER ---
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/jadwal/public', [JadwalPetugasController::class, 'public']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+    
+    // Petugas
+    Route::get('/petugas', [PetugasController::class, 'index']);
+    Route::post('/petugas', [PetugasController::class, 'store']);
+    Route::put('/petugas/{id}', [PetugasController::class, 'update']);
+    Route::delete('/petugas/{id}', [PetugasController::class, 'destroy']);
+    
+    // Jadwal Petugas
+    Route::get('/jadwal', [JadwalPetugasController::class, 'index']);
+    Route::post('/jadwal', [JadwalPetugasController::class, 'store']);
+    Route::put('/jadwal/{id}', [JadwalPetugasController::class, 'update']);
+    Route::delete('/jadwal/{id}', [JadwalPetugasController::class, 'destroy']);
+});

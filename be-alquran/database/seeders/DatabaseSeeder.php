@@ -17,17 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::updateOrCreate(
-            ['email' => 'test@example.com'],
-            ['name' => 'Test User']
-        );
+
 
         // Seed mosque app data
         $this->call([
             AdminSeeder::class,
+            PetugasSeeder::class,
             MosqueInfoSeeder::class,
             DailyPrayerSeeder::class,
-            PrayerTimeSeeder::class,
             SurahSeeder::class,
         ]);
     }

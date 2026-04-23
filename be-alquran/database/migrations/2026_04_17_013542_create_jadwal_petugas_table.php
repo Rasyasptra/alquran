@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('jadwal_petugas', function (Blueprint $table) {
+            $table->id();
+            $table->date('tanggal');
+            $table->foreignId('imam_id')->nullable()->constrained('petugas')->nullOnDelete();
+            $table->foreignId('bilal_id')->nullable()->constrained('petugas')->nullOnDelete();
+            $table->foreignId('muadzin_id')->nullable()->constrained('petugas')->nullOnDelete();
+            $table->foreignId('penceramah_id')->nullable()->constrained('petugas')->nullOnDelete();
+            $table->text('catatan')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('jadwal_petugas');
+    }
+};

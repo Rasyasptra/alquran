@@ -19,7 +19,8 @@ class AdminSeeder extends Seeder
             [
                 'name' => 'Admin Masjid',
                 'email' => 'admin@alquran.com',
-                'password' => Hash::make('admin123'),
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
             ]
         );
     }
