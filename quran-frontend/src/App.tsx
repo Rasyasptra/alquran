@@ -35,11 +35,11 @@ function App() {
   return (
     <div className="app-layout">
       {/* Column 1: Icon Sidebar */}
-      <IconSidebar 
-        activeItem={activeSidebarItem} 
-        onItemClick={handleSidebarClick} 
+      <IconSidebar
+        activeItem={activeSidebarItem}
+        onItemClick={handleSidebarClick}
       />
-      
+
       {/* Column 2 & 3: Main Content */}
       {renderContent()}
     </div>

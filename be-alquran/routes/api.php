@@ -92,4 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/jadwal', [JadwalPetugasController::class, 'store']);
     Route::put('/jadwal/{id}', [JadwalPetugasController::class, 'update']);
     Route::delete('/jadwal/{id}', [JadwalPetugasController::class, 'destroy']);
+
+    // Profil Admin
+    Route::put('/profile/password', [AuthController::class, 'changePassword']);
 });

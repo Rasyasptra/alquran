@@ -96,30 +96,33 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   // Prayer times state
-  const [prayerTimes, setPrayerTimes] = useState<JadwalSholat[]>([]);
-  const [isLoadingPrayer, setIsLoadingPrayer] = useState(false);
-  const [prayerError, setPrayerError] = useState<string | null>(null);
+
 
   // Status notifikasi & notif permission
   const [notifPermission, setNotifPermission] = useState<NotificationPermission>('default');
   const [lastAdzanFired, setLastAdzanFired] = useState<string | null>(null);
 
   const prayerTimesRef = useRef<JadwalSholat[]>([]);
-  prayerTimesRef.current = prayerTimes;
 
   // New Jadwal Petugas fetching with React Query
+  // New Jadwal Petugas fetching with React Query - Polling every 5 seconds
   const { data: jadwalPetugas, isLoading: isLoadingStaff, isError: staffError } = useQuery({
     queryKey: ['jadwalPublic', selectedMonth, selectedYear],
     queryFn: () => jadwalService.getPublic(selectedMonth, selectedYear),
+    refetchInterval: 5000,
   });
 
-  const loadPrayerTimes = async () => {
-    setIsLoadingPrayer(true);
-    setPrayerError(null);
-    try {
+  // Prayer times with React Query - Polling every 5 seconds
+  const { 
+    data: prayerTimes = [], 
+    isLoading: isLoadingPrayer, 
+    isError: isPrayerError 
+  } = useQuery({
+    queryKey: ['prayerTimes', selectedMonth, selectedYear],
+    queryFn: async () => {
       const monthStr = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}`;
       const data = await prayerApi.getMonth(monthStr);
-      const formatted: JadwalSholat[] = data.map((pt: any) => ({
+      return data.map((pt: any) => ({
         id: pt.id ?? pt.date,
         tanggal: pt.date,
         hari: pt.hari ?? '',
@@ -131,20 +134,13 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
         imsak: pt.imsak,
         notifikasi: true,
       }));
-      setPrayerTimes(formatted);
-    } catch (error: any) {
-      setPrayerError(
-        error?.response?.data?.message ||
-        'Gagal memuat jadwal sholat. Periksa koneksi internet Anda.'
-      );
-    } finally {
-      setIsLoadingPrayer(false);
-    }
-  };
+    },
+    refetchInterval: 5000,
+  });
 
-  useEffect(() => {
-    loadPrayerTimes();
-  }, [selectedMonth, selectedYear]);
+  prayerTimesRef.current = prayerTimes;
+
+  const prayerError = isPrayerError ? 'Gagal memuat jadwal sholat.' : null;
 
   // Audio / Adzan
   const createAdzanSound = () => {
@@ -280,8 +276,8 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
   };
 
   return (
-    <div className="h-full bg-[var(--islamic-background)] overflow-y-auto">
-      <div className="max-w-6xl mx-auto p-6">
+    <div className="flex-1 w-full h-full bg-[var(--islamic-background)] overflow-y-auto">
+      <div className="w-full px-4 md:px-8 py-6 mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
@@ -400,7 +396,7 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
                   <div className="p-3 bg-[var(--islamic-accent)]/10 rounded-2xl">
                     <Calendar className="w-6 h-6 text-[var(--islamic-accent)]" />
                   </div>
-                  <h2 className="text-xl font-bold text-[var(--islamic-text)]">Jadwal Sholat 5 Waktu</h2>
+                  <h2 className="text-xl font-bold text-white">Jadwal Sholat 5 Waktu</h2>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-xl text-xs font-bold text-gray-500 dark:text-gray-400">
                   <MapPin className="w-4 h-4 text-[var(--islamic-primary)]" />
@@ -451,7 +447,7 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
                           </button>
                         </div>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
                           {[
                             { name: 'Subuh',   time: jadwal.subuh },
                             { name: 'Dzuhur',  time: jadwal.dzuhur },
@@ -500,7 +496,7 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
                 <div className="p-3 bg-[var(--islamic-accent)]/10 rounded-2xl">
                   <Users className="w-6 h-6 text-[var(--islamic-accent)]" />
                 </div>
-                <h2 className="text-xl font-bold text-[var(--islamic-text)]">Informasi Petugas Harian</h2>
+                <h2 className="text-xl font-bold text-white">Informasi Petugas Harian</h2>
               </div>
 
               {isLoadingStaff ? (
@@ -514,7 +510,7 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
                   <p className="text-red-700 dark:text-red-400 font-medium">Gagal memuat informasi petugas. Silakan muat ulang.</p>
                 </div>
               ) : (jadwalPetugas?.length || 0) > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   {jadwalPetugas?.map((jadwal) => (
                     <div key={jadwal.id} className="group bg-white dark:bg-gray-800/10 border border-[var(--islamic-border)] rounded-[2rem] p-6 hover:shadow-2xl transition-all hover:border-[var(--islamic-primary)]/50">
                       <div className="mb-6 pb-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-start">
@@ -522,7 +518,7 @@ const JadwalPage = ({ onBack }: { onBack: () => void }) => {
                           {formatTanggal(jadwal.tanggal)}
                         </h3>
                       </div>
-                      <div className="grid grid-cols-2 gap-y-6 gap-x-2">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4 w-full">
                         {[
                           { label: 'Imam',       value: jadwal.imam?.nama,       icon: User,    color: 'bg-[var(--islamic-primary)]', show: true },
                           { label: 'Muadzin',    value: jadwal.muadzin?.nama,    icon: Volume2, color: 'bg-blue-600', show: true },

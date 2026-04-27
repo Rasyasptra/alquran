@@ -86,10 +86,7 @@ const Login: React.FC = () => {
           </button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Kredensial default:</p>
-          <p className="font-mono text-gray-700">admin@alquran.com / password123</p>
-        </div>
+
       </div>
     </div>
   );

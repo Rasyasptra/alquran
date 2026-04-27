@@ -17,8 +17,8 @@ const BookmarkPage = ({ onNavigateToSurah }: BookmarkPageProps) => {
   };
 
   return (
-    <div className="h-full bg-[var(--islamic-background)] overflow-y-auto p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="flex-1 w-full h-full bg-[var(--islamic-background)] overflow-y-auto p-6">
+      <div className="w-full mx-auto">
         <h1 className="text-2xl font-bold text-[var(--islamic-primary)] mb-6">Bookmark</h1>
 
         {/* Saved Surahs Section */}

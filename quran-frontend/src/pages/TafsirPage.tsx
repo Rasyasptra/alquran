@@ -253,8 +253,8 @@ const TafsirPage = ({ surahNumber, ayahNumber, onBack }: TafsirPageProps) => {
   }
 
   return (
-    <div className="h-full bg-[var(--islamic-background)] overflow-y-auto p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="flex-1 w-full h-full bg-[var(--islamic-background)] overflow-y-auto p-6">
+      <div className="w-full mx-auto">
         {/* Header */}
         <div className="sticky top-0 z-10 bg-[var(--islamic-background)]/95 backdrop-blur-sm border-b border-[var(--islamic-border)] px-6 py-4 -mx-6 mb-6">
           <div className="flex items-center justify-between">

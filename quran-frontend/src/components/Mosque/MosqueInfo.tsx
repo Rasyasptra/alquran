@@ -104,67 +104,6 @@ const MosqueInfo = () => {
         </div>
       </div>
 
-      {/* Social Media */}
-      {mosqueInfo.social_media && (
-        <div className="border-t pt-6">
-          <h4 className="font-semibold text-teal-900 mb-3">Media Sosial</h4>
-          <div className="flex space-x-4">
-            {mosqueInfo.social_media.instagram && (
-              <a
-                href={mosqueInfo.social_media.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-pink-600 hover:text-pink-700"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.858 0 3.252-.012 4.584-.07 3.252-.148 4.771-1.691 4.919-4.919.058-1.265.069-1.645.069-4.858 0-3.252-.012-4.584-.07-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.858 0-3.252.012-4.584.07-3.252.148-4.771 1.691-4.919 4.919-.058 1.265-.069 1.645-.069 4.858 0 3.252.012 4.584.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.858 0 3.252-.012 4.584-.07 3.252-.148 4.771-1.691 4.919-4.919.058-1.265.069-1.645.069-4.858zM12 15.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7zm4.5-8.5a1 1 0 100-2 1 1 0 000 2z"/>
-                </svg>
-              </a>
-            )}
-            {mosqueInfo.social_media.youtube && (
-              <a
-                href={mosqueInfo.social_media.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-red-600 hover:text-red-700"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                </svg>
-              </a>
-            )}
-            {mosqueInfo.social_media.facebook && (
-              <a
-                href={mosqueInfo.social_media.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-700"
-              >
-                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12 12-5.373 12-12zm-10.5-6.5h2.5v2.5c0 1.5.5 2.5 2.5 2.5h1.5v3h-3c-2.5 0-4-1.5-4-4v-4h-2v-3h2v-3h3v3h3v3h-3v4z"/>
-                </svg>
-              </a>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Website */}
-      {mosqueInfo.website_url && (
-        <div className="mt-6 text-center">
-          <a
-            href={mosqueInfo.website_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 inline-flex items-center"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-            Kunjungi Website
-          </a>
-        </div>
-      )}
     </div>
   );
 };

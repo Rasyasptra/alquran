@@ -1,4 +1,4 @@
-import { Home, Bookmark, History, Settings, LogOut, BookOpen, Calendar, Users } from 'lucide-react';
+import { Home, Bookmark, History, Settings, BookOpen, Calendar, Users } from 'lucide-react';
 
 interface IconSidebarProps {
   activeItem?: string;
@@ -6,7 +6,7 @@ interface IconSidebarProps {
 }
 
 const IconSidebar = ({ activeItem = 'home', onItemClick }: IconSidebarProps) => {
-  
+
   const menuItems = [
     { id: 'home', icon: Home, label: 'Beranda' },
     { id: 'bookmark', icon: Bookmark, label: 'Bookmark' },
@@ -30,7 +30,7 @@ const IconSidebar = ({ activeItem = 'home', onItemClick }: IconSidebarProps) => 
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeItem === item.id;
-          
+
           return (
             <button
               key={item.id}
@@ -44,15 +44,6 @@ const IconSidebar = ({ activeItem = 'home', onItemClick }: IconSidebarProps) => 
         })}
       </div>
 
-      {/* Logout */}
-      <div className="mt-auto">
-        <button
-          className="sidebar-icon"
-          title="Keluar"
-        >
-          <LogOut className="w-5 h-5" />
-        </button>
-      </div>
     </div>
   );
 };

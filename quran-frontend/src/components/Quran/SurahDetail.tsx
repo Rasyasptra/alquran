@@ -19,12 +19,13 @@ interface SurahDetailProps {
   surah: Surah;
   onBack: () => void;
   onTafsirView?: (surahNumber: number, ayahNumber: number) => void;
+  mosqueName?: string;
 }
 
 const PLAYBACK_SPEEDS = [0.75, 1, 1.25, 1.5] as const;
 type PlaybackSpeed = typeof PLAYBACK_SPEEDS[number];
 
-const SurahDetail = ({ surah, onBack, onTafsirView }: SurahDetailProps) => {
+const SurahDetail = ({ surah, onBack, onTafsirView, mosqueName }: SurahDetailProps) => {
   // Audio states
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -700,9 +701,9 @@ const SurahDetail = ({ surah, onBack, onTafsirView }: SurahDetailProps) => {
               </svg>
             </button>
             
-            {/* Bismillah Header */}
-            <div className="font-arabic-display text-2xl text-[var(--islamic-primary)]">
-              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+            {/* Mosque Name Header */}
+            <div className="font-bold text-2xl text-[var(--islamic-primary)]">
+              {mosqueName || 'Al-Qur\'an'}
             </div>
           </div>
         </div>
